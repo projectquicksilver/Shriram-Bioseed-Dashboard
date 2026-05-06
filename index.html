@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shriram Bioseed — Campaign Intelligence</title>
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/projectquicksilver/Shriram-Bioseed-Dashboard/main/shriram_bioseed_logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* ── DESIGN TOKENS ──────────────────────────────────── */
+    :root {
+      /* Brand */
+      --brand-green:   #1A7A3C;
+      --brand-green2:  #22A050;
+      --brand-green3:  #2DC76D;
+      --brand-orange:  #E8620A;
+      --brand-orange2: #F97316;
+      --brand-orange3: #FEA64A;
+
+      /* Surface */
+      --bg:         #F0F4F1;
+      --surface:    #FFFFFF;
+      --surface2:   #F7FAF8;
+      --surface3:   #EDF3EF;
+      --glass:      rgba(255,255,255,0.75);
+
+      /* Border */
+      --border:     #DDE8E1;
+      --border2:    #C5D8CB;
+
+      /* Text */
+      --text:       #0D1F15;
+      --text2:      #4B6356;
+      --text3:      #8FAD9A;
+
+      /* Semantic */
+      --success:     #1A7A3C;
+      --success-lt:  #22A050;
+      --success-soft:#E8F5ED;
+      --warning:     #C97D10;
+      --warning-soft:#FEF5E4;
+      --danger:      #C0392B;
+      --danger-soft: #FDEDEB;
+      --info:        #1565C0;
+      --info-soft:   #E3F2FD;
+      --purple:      #6B21A8;
+      --purple-soft: #F3E8FF;
+      --teal:        #0D7377;
+      --teal-soft:   #E0F4F5;
+
+      /* Shadows */
+      --shadow-xs:  0 1px 3px rgba(0,0,0,.06);
+      --shadow-sm:  0 2px 8px rgba(0,0,0,.07);
+      --shadow:     0 4px 16px rgba(0,0,0,.08);
+      --shadow-lg:  0 12px 32px rgba(0,0,0,.12);
+
+      --radius-xs:  4px;
+      --radius-sm:  8px;
+      --radius:     12px;
+      --radius-lg:  18px;
+      --radius-xl:  24px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    /* ── DECORATIVE BG ──────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(34,160,80,.07) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -150px; left: -150px;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,98,10,.05) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────── */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 4px 20px rgba(0,0,0,.04);
+    }
+    .header-inner {
+      display: flex; align-items: center; gap: 16px;
+      padding: 0 28px; height: 62px;
+    }
+    .logo-mark {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .logo-img-wrap {
+      height: 38px; display: flex; align-items: center;
+      padding: 2px;
+    }
+    .logo-img-wrap img {
+      height: 38px; width: auto;
+      object-fit: contain;
+    }
+    .logo-divider { width: 1px; height: 28px; background: var(--border); margin: 0 2px; }
+    .logo-text-wrap { display: flex; flex-direction: column; line-height: 1.15; }
+    .logo-name { font-size: 15px; font-weight: 800; color: var(--brand-green); letter-spacing: -0.3px; }
+    .logo-sub  { font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: 1.2px; text-transform: uppercase; }
+
+    .header-sep { width: 1px; height: 22px; background: var(--border); }
+    .header-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      background: linear-gradient(135deg, var(--success-soft), #d7f0e2);
+      color: var(--brand-green);
+      border: 1px solid rgba(26,122,60,.15);
+      letter-spacing: .4px;
+    }
+    .header-pill::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--brand-green);
+      box-shadow: 0 0 0 3px rgba(26,122,60,.2);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 3px rgba(26,122,60,.2)} 50%{box-shadow:0 0 0 6px rgba(26,122,60,.05)} }
+
+    .header-nav { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 8px 16px; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer; border: 1px solid var(--border);
+      background: var(--surface2); color: var(--text2);
+      transition: all .18s ease; text-decoration: none;
+    }
+    .nav-btn:hover { background: var(--surface3); border-color: var(--border2); color: var(--text); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+    .nav-btn-primary {
+      background: var(--brand-green); color: #fff;
+      border-color: var(--brand-green);
+      box-shadow: 0 2px 10px rgba(26,122,60,.28);
+    }
+    .nav-btn-primary:hover {
+      background: var(--brand-green2); border-color: var(--brand-green2);
+      box-shadow: 0 4px 18px rgba(26,122,60,.38);
+    }
+    .nav-btn-danger { color: var(--danger); border-color: transparent; background: transparent; }
+    .nav-btn-danger:hover { background: var(--danger-soft); border-color: #f5b0aa; color: var(--danger); }
+
+    /* ── PAGE TABS ──────────────────────────────────────── */
+    .page-tabs {
+      display: flex; gap: 0; padding: 0 24px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+    }
+    .page-tab {
+      padding: 11px 18px; font-size: 13px; font-weight: 600;
+      color: var(--text3); cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all .18s;
+      display: flex; align-items: center; gap: 7px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .page-tab:hover { color: var(--brand-green); }
+    .page-tab.active {
+      color: var(--brand-green);
+      border-bottom-color: var(--brand-green);
+    }
+    .tab-icon { font-size: 14px; }
+
+    /* ── LAYOUT ─────────────────────────────────────────── */
+    .layout { display: flex; min-height: calc(100vh - 107px); position: relative; z-index: 1; }
+
+    /* ── SIDEBAR ─────────────────────────────────────────── */
+    .sidebar {
+      width: 256px; flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 20px 14px;
+      overflow-y: auto;
+      position: sticky; top: 107px;
+      height: calc(100vh - 107px);
+    }
+    .sidebar-title {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.4px;
+      text-transform: uppercase; color: var(--text3);
+      padding: 0 6px 14px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .filter-section { margin-bottom: 4px; }
+    .filter-section-label {
+      font-size: 9px; font-weight: 800; color: var(--brand-green);
+      text-transform: uppercase; letter-spacing: 1.5px;
+      padding: 10px 6px 6px; display: block;
+    }
+    .filter-group { margin-bottom: 10px; }
+    .filter-label {
+      font-size: 11px; font-weight: 600; color: var(--text2);
+      margin-bottom: 5px; display: flex; align-items: center; gap: 5px; padding: 0 2px;
+    }
+    .filter-input, .filter-select {
+      width: 100%; padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface2);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 500; color: var(--text);
+      transition: all .15s; outline: none;
+      appearance: none;
+    }
+    .filter-input:focus, .filter-select:focus {
+      border-color: var(--brand-green); background: #fff;
+      box-shadow: 0 0 0 3px rgba(26,122,60,.1);
+    }
+    .filter-select-wrap { position: relative; }
+    .filter-select-wrap::after {
+      content: '▾'; position: absolute; right: 11px; top: 50%;
+      transform: translateY(-50%); color: var(--text3); font-size: 11px; pointer-events: none;
+    }
+    .filter-divider { border: none; border-top: 1px dashed var(--border); margin: 12px 0; }
+    .sidebar-reset {
+      width: 100%; padding: 9px 12px;
+      background: var(--surface3); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 600; color: var(--text2);
+      cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .sidebar-reset:hover { background: var(--danger-soft); border-color: #f5b0aa; color: var(--danger); }
+
+    /* ── MAIN ────────────────────────────────────────────── */
+    .main { flex: 1; padding: 24px; overflow: hidden; }
+
+    /* ── SECTION HEADER ──────────────────────────────────── */
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.3px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title-accent {
+      width: 4px; height: 20px; border-radius: 2px;
+      background: linear-gradient(180deg, var(--brand-green), var(--brand-green3));
+    }
+    .section-subtitle { font-size: 12px; color: var(--text3); font-weight: 500; }
+
+    /* ── KPI CARDS ───────────────────────────────────────── */
+    .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 20px; }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      transition: all .22s ease;
+      position: relative; overflow: hidden;
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--kpi-accent);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    .kpi-card::after {
+      content: '';
+      position: absolute; bottom: -20px; right: -20px;
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--kpi-bg);
+      opacity: .5;
+    }
+    .kpi-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); border-color: var(--border2); }
+    .kpi-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+    .kpi-icon {
+      width: 44px; height: 44px; border-radius: 11px;
+      background: var(--kpi-bg);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--kpi-col);
+      flex-shrink: 0;
+    }
+    .kpi-badge {
+      font-size: 11px; font-weight: 700;
+      padding: 4px 10px; border-radius: 20px;
+      background: var(--kpi-bg); color: var(--kpi-col);
+      letter-spacing: .3px;
+    }
+    .kpi-val {
+      font-size: 32px; font-weight: 800; color: var(--text);
+      line-height: 1; margin-bottom: 5px; letter-spacing: -1.5px;
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-label { font-size: 12px; font-weight: 700; color: var(--text2); text-transform: uppercase; letter-spacing: .6px; }
+    .kpi-sub   { font-size: 11.5px; color: var(--text3); margin-top: 5px; }
+    .kpi-bar   { height: 4px; background: var(--border); border-radius: 4px; margin-top: 16px; overflow: hidden; }
+    .kpi-bar-fill { height: 100%; background: var(--kpi-accent); border-radius: 4px; transition: width 1s ease; }
+
+    /* KPI color themes */
+    .kpi-green  { --kpi-col: var(--brand-green);  --kpi-bg: var(--success-soft); --kpi-accent: var(--brand-green); }
+    .kpi-amber  { --kpi-col: var(--warning);      --kpi-bg: var(--warning-soft); --kpi-accent: var(--warning); }
+    .kpi-red    { --kpi-col: var(--danger);        --kpi-bg: var(--danger-soft);  --kpi-accent: var(--danger); }
+    .kpi-blue   { --kpi-col: var(--info);          --kpi-bg: var(--info-soft);    --kpi-accent: var(--info); }
+    .kpi-purple { --kpi-col: var(--purple);        --kpi-bg: var(--purple-soft);  --kpi-accent: var(--purple); }
+    .kpi-teal   { --kpi-col: var(--teal);          --kpi-bg: var(--teal-soft);    --kpi-accent: var(--teal); }
+    .kpi-orange { --kpi-col: var(--brand-orange);  --kpi-bg: #FEF0E8;             --kpi-accent: var(--brand-orange); }
+
+    /* ── CARD ────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .card-title {
+      font-size: 11px; font-weight: 800; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 1px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card-title-bar {
+      width: 3px; height: 14px; border-radius: 2px;
+      background: linear-gradient(180deg, var(--brand-green), var(--brand-green3));
+    }
+    .card canvas { width: 100% !important; max-height: 290px !important; }
+
+    /* ── GRIDS ───────────────────────────────────────────── */
+    .grid-2  { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .grid-3  { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .col-span-2 { grid-column: span 2; }
+    .col-span-3 { grid-column: span 3; }
+
+    /* ── TABLE ───────────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; border-radius: var(--radius-sm); }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .data-table th {
+      text-align: left; padding: 11px 14px;
+      font-size: 10px; font-weight: 800; letter-spacing: .9px;
+      text-transform: uppercase; color: var(--text2);
+      background: var(--surface2); border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+    .data-table th:first-child { border-radius: var(--radius-xs) 0 0 0; }
+    .data-table th:last-child  { border-radius: 0 var(--radius-xs) 0 0; }
+    .data-table td {
+      padding: 11px 14px; border-bottom: 1px solid #EEF3F0;
+      color: var(--text2); font-weight: 500;
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: #F5FAF7; }
+    .data-table .mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+
+    /* ── BADGES ──────────────────────────────────────────── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+    }
+    .badge-green { background: var(--success-soft); color: var(--brand-green); }
+    .badge-red   { background: var(--danger-soft);  color: var(--danger); }
+    .badge-amber { background: var(--warning-soft); color: var(--warning); }
+    .badge-blue  { background: var(--info-soft);    color: var(--info); }
+    .badge-target {
+      background: linear-gradient(135deg, var(--success-soft), #d7f0e2);
+      color: var(--brand-green); border: 1px solid rgba(26,122,60,.2);
+    }
+
+    /* ── PROGRESS BAR ────────────────────────────────────── */
+    .prog-bar  { height: 5px; background: var(--border); border-radius: 4px; overflow: hidden; flex: 1; }
+    .prog-fill { height: 100%; border-radius: 4px; transition: width .8s ease; }
+
+    /* ── MAP ─────────────────────────────────────────────── */
+    #mapContainer { height: 460px; border-radius: var(--radius-sm); overflow: hidden; }
+    .leaflet-container { font-family: 'DM Sans', sans-serif !important; background: var(--surface2); }
+    .leaflet-popup-content-wrapper {
+      border-radius: 14px !important; box-shadow: var(--shadow-lg) !important;
+      border: 1px solid var(--border) !important; padding: 0 !important;
+    }
+    .leaflet-popup-content { margin: 0 !important; font-family: 'DM Sans', sans-serif; }
+    .map-popup { min-width: 260px; }
+    .map-popup-head {
+      background: linear-gradient(135deg, var(--brand-green), var(--brand-green2));
+      padding: 16px 20px; border-radius: 12px 12px 0 0; color: white;
+    }
+    .map-popup-head h4 { font-size: 17px; font-weight: 800; }
+    .map-popup-head p  { font-size: 11px; opacity: .8; margin-top: 2px; }
+    .map-popup-body { padding: 14px 20px; }
+    .map-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+    }
+    .map-row:last-child { border-bottom: none; }
+    .map-row-label { font-size: 12px; color: var(--text2); font-weight: 600; }
+    .map-row-val   { font-size: 17px; font-weight: 800; font-family: 'DM Mono', monospace; }
+    .map-marker-div {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: white; border-radius: 50%; border: 3px solid;
+      width: 62px; height: 62px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.18);
+      font-family: 'DM Sans', sans-serif;
+      transition: transform .2s; cursor: pointer;
+    }
+    .map-marker-div:hover { transform: scale(1.15); }
+    .map-marker-count { font-size: 17px; font-weight: 800; line-height: 1; }
+    .map-marker-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; opacity: .6; }
+
+    /* ── PAGE SECTIONS ───────────────────────────────────── */
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    /* ── REPEAT FARMERS ──────────────────────────────────── */
+    .repeat-summary { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 20px; }
+    .repeat-stat {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px;
+      text-align: center; box-shadow: var(--shadow-sm);
+      position: relative; overflow: hidden;
+    }
+    .repeat-stat::before {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--brand-green), var(--brand-green3));
+    }
+    .repeat-stat-val   { font-size: 34px; font-weight: 800; color: var(--brand-green); letter-spacing: -1.5px; font-variant-numeric: tabular-nums; }
+    .repeat-stat-label { font-size: 12px; color: var(--text2); font-weight: 700; margin-top: 5px; text-transform: uppercase; letter-spacing: .5px; }
+
+    /* ── SKU GRID ────────────────────────────────────────── */
+    .sku-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px,1fr)); gap: 12px; margin-bottom: 4px; }
+    .sku-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 16px 18px;
+      transition: all .22s; position: relative; overflow: hidden;
+    }
+    .sku-card::after {
+      content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+      background: linear-gradient(180deg, var(--brand-green), var(--brand-orange));
+      border-radius: var(--radius-xs) 0 0 var(--radius-xs);
+    }
+    .sku-card:hover { background: #fff; box-shadow: var(--shadow); border-color: var(--border2); transform: translateY(-2px); }
+    .sku-name    { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 2px; }
+    .sku-variant { font-size: 11px; color: var(--text3); margin-bottom: 12px; }
+    .sku-qty     { font-size: 28px; font-weight: 800; color: var(--brand-green); letter-spacing: -0.8px; font-variant-numeric: tabular-nums; }
+    .sku-unit    { font-size: 11px; color: var(--text2); font-weight: 600; }
+
+    /* ── LOGIN ───────────────────────────────────────────── */
+    .login-overlay {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #0A2414 0%, #1A4828 50%, #0D3320 100%);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999;
+    }
+    .login-bg-pattern {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(rgba(45,199,109,.08) 1px, transparent 1px);
+      background-size: 36px 36px;
+      pointer-events: none;
+    }
+    .login-glow {
+      position: absolute; width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(34,160,80,.18) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .login-box {
+      background: rgba(255,255,255,.98);
+      border-radius: var(--radius-xl);
+      padding: 44px 40px;
+      width: min(92vw, 420px);
+      box-shadow: 0 32px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.1);
+      animation: loginIn .45s cubic-bezier(.34,1.56,.64,1);
+      position: relative; z-index: 1;
+    }
+    @keyframes loginIn { from { opacity:0; transform:translateY(30px) scale(.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+    .login-logo-wrap { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+    .login-logo-img  { height: 48px; width: auto; object-fit: contain; }
+    .login-logo-text { display: flex; flex-direction: column; }
+    .login-logo-name { font-size: 20px; font-weight: 800; color: var(--brand-green); letter-spacing: -0.4px; }
+    .login-logo-bioseed { font-size: 13px; font-weight: 600; color: var(--text2); }
+    .login-divider { height: 1px; background: var(--border); margin: 18px 0; }
+    .login-title { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; margin-bottom: 4px; }
+    .login-sub   { font-size: 13px; color: var(--text2); margin-bottom: 24px; }
+    .login-field { margin-bottom: 14px; }
+    .login-field label {
+      display: block; font-size: 11px; font-weight: 700; color: var(--text2);
+      text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px;
+    }
+    .login-field input {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+      color: var(--text); outline: none; transition: all .15s;
+      background: var(--surface2);
+    }
+    .login-field input:focus { border-color: var(--brand-green); background: #fff; box-shadow: 0 0 0 3px rgba(26,122,60,.12); }
+    .login-btn {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--brand-green), var(--brand-green2));
+      color: white; border: none; border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; margin-top: 8px; letter-spacing: .2px;
+      transition: all .2s; box-shadow: 0 4px 16px rgba(26,122,60,.35);
+    }
+    .login-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(26,122,60,.45); }
+    .login-err { color: var(--danger); font-size: 12px; min-height: 18px; margin-top: 10px; font-weight: 600; }
+    .login-footer { font-size: 11px; color: var(--text3); text-align: center; margin-top: 18px; }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    .footer {
+      padding: 14px 28px; text-align: center;
+      font-size: 12px; color: var(--text3); font-weight: 500;
+      border-top: 1px solid var(--border); background: var(--surface);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .footer-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text3); }
+
+    /* ── FLATPICKR ───────────────────────────────────────── */
+    .flatpickr-day.selected { background: var(--brand-green) !important; border-color: var(--brand-green) !important; }
+    .flatpickr-day.inRange  { background: var(--success-soft) !important; border-color: var(--success-soft) !important; }
+
+    /* ── CHIP STATS ROW ──────────────────────────────────── */
+    .chip-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+      background: var(--surface); border: 1px solid var(--border); color: var(--text2);
+    }
+    .chip-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .kpi-row { grid-template-columns: repeat(2,1fr); }
+      .grid-2  { grid-template-columns: 1fr; }
+      .grid-3  { grid-template-columns: 1fr; }
+      .col-span-2, .col-span-3 { grid-column: span 1; }
+      .sidebar { display: none; }
+    }
+    @media (max-width: 640px) {
+      .main { padding: 14px; }
+      .kpi-row { grid-template-columns: 1fr; }
+      .header-inner { padding: 0 16px; }
+      .repeat-summary { grid-template-columns: 1fr; }
+    }
+
+    /* ── ANIMATIONS ──────────────────────────────────────── */
+    @keyframes fadeSlideUp {
+      from { opacity:0; transform:translateY(14px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .kpi-card { animation: fadeSlideUp .4s ease backwards; }
+    .kpi-card:nth-child(1) { animation-delay:.05s }
+    .kpi-card:nth-child(2) { animation-delay:.10s }
+    .kpi-card:nth-child(3) { animation-delay:.15s }
+    .kpi-card:nth-child(4) { animation-delay:.20s }
+    .card { animation: fadeSlideUp .4s ease .15s backwards; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-bg-pattern"></div>
+  <div class="login-glow"></div>
+  <form class="login-box" id="loginForm" onsubmit="handleLogin(event)">
+    <div class="login-logo-wrap">
+      <img class="login-logo-img" src="https://raw.githubusercontent.com/projectquicksilver/Shriram-Bioseed-Dashboard/main/shriram_bioseed_logo.png" alt="Shriram Bioseed" onerror="this.style.display='none'">
+      <div class="login-logo-text">
+        <span class="login-logo-name">Shriram Bioseed</span>
+        <span class="login-logo-bioseed">Seed Intelligence Platform</span>
+      </div>
+    </div>
+    <div class="login-divider"></div>
+    <div class="login-title">Welcome back</div>
+    <p class="login-sub">Sign in to access your campaign dashboard</p>
+    <div class="login-field">
+      <label>Username</label>
+      <input id="loginUser" placeholder="Enter username" autocomplete="username" />
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input id="loginPass" type="password" placeholder="Enter password" autocomplete="current-password" />
+    </div>
+    <button class="login-btn" type="submit">Sign In →</button>
+    <div class="login-err" id="loginErr"></div>
+    <div class="login-footer">© 2025 Shriram Bioseed · Campaign Intelligence</div>
+  </form>
+</div>
+
+<!-- APP SHELL -->
+<header class="header">
+  <div class="header-inner">
+    <a class="logo-mark" href="#">
+      <div class="logo-img-wrap">
+        <img src="https://raw.githubusercontent.com/projectquicksilver/Shriram-Bioseed-Dashboard/main/shriram_bioseed_logo.png" alt="Shriram Bioseed" onerror="this.parentElement.innerHTML='<div style=\'font-size:24px;\'>🌱</div>'">
+      </div>
+      <div class="logo-divider"></div>
+      <div class="logo-text-wrap">
+        <span class="logo-name">Shriram Bioseed</span>
+        <span class="logo-sub">Campaign Intelligence</span>
+      </div>
+    </a>
+    <div class="header-sep"></div>
+    <span class="header-pill">UP & CG Campaign 2025</span>
+    <nav class="header-nav">
+      <button class="nav-btn nav-btn-primary" id="downloadBtn">
+        <i data-lucide="download" style="width:15px;height:15px;stroke-width:2.2px;"></i> Export CSV
+      </button>
+      <button class="nav-btn nav-btn-danger" id="logoutBtn">
+        <i data-lucide="log-out" style="width:15px;height:15px;stroke-width:2.2px;"></i> Sign Out
+      </button>
+    </nav>
+  </div>
+  <div class="page-tabs">
+    <div class="page-tab active" data-tab="overview"><span class="tab-icon">📊</span> Overview</div>
+    <div class="page-tab" data-tab="fa"><span class="tab-icon">👤</span> FA Performance</div>
+    <div class="page-tab" data-tab="retailer"><span class="tab-icon">🏪</span> Retailer Analytics</div>
+    <div class="page-tab" data-tab="district"><span class="tab-icon">📍</span> District Insights</div>
+    <div class="page-tab" data-tab="sku"><span class="tab-icon">📦</span> SKU Analysis</div>
+    <div class="page-tab" data-tab="repeat"><span class="tab-icon">🔁</span> Repeat Farmers</div>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">
+      <i data-lucide="sliders-horizontal" style="width:14px;height:14px;stroke-width:2.2px;"></i>
+      Filters
+    </div>
+
+    <div class="filter-section">
+      <span class="filter-section-label">📅 Time Period</span>
+      <div class="filter-group">
+        <div class="filter-label"><i data-lucide="calendar" style="width:13px;height:13px;stroke-width:2px;"></i> Date Range</div>
+        <input class="filter-input" id="dateRange" placeholder="Select range…" readonly />
+      </div>
+    </div>
+    <hr class="filter-divider">
+    <div class="filter-section">
+      <span class="filter-section-label">📍 Geography</span>
+      <div class="filter-group">
+        <div class="filter-label"><i data-lucide="map" style="width:13px;height:13px;stroke-width:2px;"></i> State</div>
+        <div class="filter-select-wrap"><select class="filter-select" id="fState"></select></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label"><i data-lucide="map-pin" style="width:13px;height:13px;stroke-width:2px;"></i> District</div>
+        <div class="filter-select-wrap"><select class="filter-select" id="fDistrict"></select></div>
+      </div>
+    </div>
+    <hr class="filter-divider">
+    <div class="filter-section">
+      <span class="filter-section-label">🏪 Channel</span>
+      <div class="filter-group">
+        <div class="filter-label"><i data-lucide="store" style="width:13px;height:13px;stroke-width:2px;"></i> Retailer</div>
+        <div class="filter-select-wrap"><select class="filter-select" id="fRetailer"></select></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label"><i data-lucide="user" style="width:13px;height:13px;stroke-width:2px;"></i> FA (PT)</div>
+        <div class="filter-select-wrap"><select class="filter-select" id="fPT"></select></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label"><i data-lucide="globe" style="width:13px;height:13px;stroke-width:2px;"></i> Zone</div>
+        <div class="filter-select-wrap"><select class="filter-select" id="fZone"></select></div>
+      </div>
+    </div>
+    <hr class="filter-divider">
+    <div class="filter-section">
+      <span class="filter-section-label">📦 Product</span>
+      <div class="filter-group">
+        <div class="filter-label"><i data-lucide="package" style="width:13px;height:13px;stroke-width:2px;"></i> Product</div>
+        <div class="filter-select-wrap"><select class="filter-select" id="fProduct"></select></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label"><i data-lucide="ruler" style="width:13px;height:13px;stroke-width:2px;"></i> Unit</div>
+        <div class="filter-select-wrap"><select class="filter-select" id="fUnit"></select></div>
+      </div>
+    </div>
+    <hr class="filter-divider">
+    <div class="filter-section">
+      <span class="filter-section-label">⚙️ Submission</span>
+      <div class="filter-group">
+        <div class="filter-label"><i data-lucide="check-circle-2" style="width:13px;height:13px;stroke-width:2px;"></i> Status</div>
+        <div class="filter-select-wrap"><select class="filter-select" id="fStatus"></select></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label"><i data-lucide="smartphone" style="width:13px;height:13px;stroke-width:2px;"></i> Source</div>
+        <div class="filter-select-wrap"><select class="filter-select" id="fSource"></select></div>
+      </div>
+    </div>
+    <hr class="filter-divider">
+    <button class="sidebar-reset" id="resetBtn">
+      <i data-lucide="rotate-ccw" style="width:13px;height:13px;stroke-width:2.2px;"></i> Reset All Filters
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ══ TAB: OVERVIEW ══════════════════════════════ -->
+    <div class="page-section active" id="tab-overview">
+      <div class="section-header">
+        <div class="section-title">
+          <div class="section-title-accent"></div>
+          Campaign Overview
+        </div>
+        <div class="section-subtitle">Uttar Pradesh & Chhattisgarh · 2025</div>
+      </div>
+
+      <!-- KPIs Row 1 -->
+      <div class="kpi-row">
+        <div class="kpi-card kpi-green">
+          <div class="kpi-top">
+            <div class="kpi-icon"><i data-lucide="scan-line" style="width:22px;height:22px;stroke-width:1.8px;"></i></div>
+            <div class="kpi-badge" id="k1Badge">Live</div>
+          </div>
+          <div class="kpi-val" id="kTotalScans">0</div>
+          <div class="kpi-label">Total Scans</div>
+          <div class="kpi-sub" id="kScansSub">All time</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" id="kTotalBar" style="width:100%"></div></div>
+        </div>
+        <div class="kpi-card kpi-green">
+          <div class="kpi-top">
+            <div class="kpi-icon"><i data-lucide="check-circle-2" style="width:22px;height:22px;stroke-width:1.8px;"></i></div>
+            <div class="kpi-badge" id="kApprovedBadge">0%</div>
+          </div>
+          <div class="kpi-val" id="kApproved">0</div>
+          <div class="kpi-label">Approved</div>
+          <div class="kpi-sub">Submission approved</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" id="kApprovedBar" style="width:0%"></div></div>
+        </div>
+        <div class="kpi-card kpi-amber">
+          <div class="kpi-top">
+            <div class="kpi-icon"><i data-lucide="clock" style="width:22px;height:22px;stroke-width:1.8px;"></i></div>
+            <div class="kpi-badge" id="kPendingBadge">0%</div>
+          </div>
+          <div class="kpi-val" id="kPending">0</div>
+          <div class="kpi-label">Pending</div>
+          <div class="kpi-sub">Awaiting review</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" id="kPendingBar" style="width:0%"></div></div>
+        </div>
+        <div class="kpi-card kpi-red">
+          <div class="kpi-top">
+            <div class="kpi-icon"><i data-lucide="x-circle" style="width:22px;height:22px;stroke-width:1.8px;"></i></div>
+            <div class="kpi-badge" id="kRejectedBadge">0%</div>
+          </div>
+          <div class="kpi-val" id="kRejected">0</div>
+          <div class="kpi-label">Rejected</div>
+          <div class="kpi-sub">Declined submissions</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" id="kRejectedBar" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- KPIs Row 2 -->
+      <div class="kpi-row" style="margin-bottom:24px">
+        <div class="kpi-card kpi-blue">
+          <div class="kpi-top">
+            <div class="kpi-icon"><i data-lucide="users" style="width:22px;height:22px;stroke-width:1.8px;"></i></div>
+            <div class="kpi-badge">Farmers</div>
+          </div>
+          <div class="kpi-val" id="kFarmers">0</div>
+          <div class="kpi-label">Total Farmers</div>
+          <div class="kpi-sub" id="kFarmersSub">0 unique</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" id="kFarmersBar" style="width:0%"></div></div>
+        </div>
+        <div class="kpi-card kpi-purple">
+          <div class="kpi-top">
+            <div class="kpi-icon"><i data-lucide="store" style="width:22px;height:22px;stroke-width:1.8px;"></i></div>
+            <div class="kpi-badge">Active</div>
+          </div>
+          <div class="kpi-val" id="kRetailers">0</div>
+          <div class="kpi-label">Active Retailers</div>
+          <div class="kpi-sub" id="kRetailersSub">Participating</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" id="kRetailersBar" style="width:0%"></div></div>
+        </div>
+        <div class="kpi-card kpi-teal">
+          <div class="kpi-top">
+            <div class="kpi-icon"><i data-lucide="phone-missed" style="width:22px;height:22px;stroke-width:1.8px;"></i></div>
+            <div class="kpi-badge">Missed</div>
+          </div>
+          <div class="kpi-val" id="kMissedCalls">0</div>
+          <div class="kpi-label">Missed Calls</div>
+          <div class="kpi-sub" id="kMissedCallsSub">Total registered</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" id="kMissedCallsBar" style="width:0%"></div></div>
+        </div>
+        <div class="kpi-card kpi-orange">
+          <div class="kpi-top">
+            <div class="kpi-icon"><i data-lucide="smartphone" style="width:22px;height:22px;stroke-width:1.8px;"></i></div>
+            <div class="kpi-badge">Unique</div>
+          </div>
+          <div class="kpi-val" id="kUniqueCalls">0</div>
+          <div class="kpi-label">Unique Callers</div>
+          <div class="kpi-sub">Distinct numbers</div>
+          <div class="kpi-bar"><div class="kpi-bar-fill" id="kUniqueCallsBar" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- Trend + Donut -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><div class="card-title-bar"></div> Daily Scan Trend</div>
+          </div>
+          <canvas id="trendChart" height="200"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><div class="card-title-bar"></div> Approval Status</div>
+          </div>
+          <canvas id="statusChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- Source + Channel -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><div class="card-title-bar"></div> Participation by Source</div>
+          </div>
+          <canvas id="sourceChart" height="200"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><div class="card-title-bar"></div> Walk-in vs FA-Driven</div>
+          </div>
+          <canvas id="channelChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- Map -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header">
+          <div class="card-title"><div class="card-title-bar"></div> State-wise Distribution Map</div>
+          <div class="chip-row" style="margin:0">
+            <span class="chip"><span class="chip-dot" style="background:var(--brand-green)"></span>UP</span>
+            <span class="chip"><span class="chip-dot" style="background:var(--brand-orange)"></span>Chhattisgarh</span>
+          </div>
+        </div>
+        <div id="mapContainer"></div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: FA PERFORMANCE ════════════════════════ -->
+    <div class="page-section" id="tab-fa">
+      <div class="section-header">
+        <div class="section-title"><div class="section-title-accent"></div>FA Performance</div>
+      </div>
+      <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
+        <div class="kpi-card kpi-green">
+          <div class="kpi-top"><div class="kpi-icon"><i data-lucide="user" style="width:22px;height:22px;stroke-width:1.8px;"></i></div></div>
+          <div class="kpi-val" id="faTotal">0</div>
+          <div class="kpi-label">Total FAs</div>
+        </div>
+        <div class="kpi-card kpi-blue">
+          <div class="kpi-top"><div class="kpi-icon"><i data-lucide="bar-chart-2" style="width:22px;height:22px;stroke-width:1.8px;"></i></div></div>
+          <div class="kpi-val" id="faAvgLeads">0</div>
+          <div class="kpi-label">Avg Leads / FA</div>
+        </div>
+        <div class="kpi-card kpi-orange">
+          <div class="kpi-top"><div class="kpi-icon"><i data-lucide="award" style="width:22px;height:22px;stroke-width:1.8px;"></i></div></div>
+          <div class="kpi-val" id="faTopLeads">0</div>
+          <div class="kpi-label">Top FA Leads</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card col-span-2">
+          <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> FA-wise Lead Generation (Top 15)</div></div>
+          <canvas id="faLeadsChart" height="260"></canvas>
+        </div>
+        <div class="card col-span-2">
+          <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> FA Approval Rate Breakdown</div></div>
+          <canvas id="faStatusChart" height="220"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> FA Performance Table</div></div>
+        <div class="table-wrap">
+          <table class="data-table" id="faTable">
+            <thead><tr>
+              <th>#</th><th>FA Name</th><th>Total Leads</th>
+              <th>Approved</th><th>Pending</th><th>Rejected</th>
+              <th>Approval Rate</th><th>Progress</th>
+            </tr></thead>
+            <tbody id="faTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: RETAILER ══════════════════════════════ -->
+    <div class="page-section" id="tab-retailer">
+      <div class="section-header">
+        <div class="section-title"><div class="section-title-accent"></div>Retailer Analytics</div>
+      </div>
+      <div class="kpi-row" style="grid-template-columns:repeat(3,1fr)">
+        <div class="kpi-card kpi-purple">
+          <div class="kpi-top"><div class="kpi-icon"><i data-lucide="store" style="width:22px;height:22px;stroke-width:1.8px;"></i></div></div>
+          <div class="kpi-val" id="retActive">0</div>
+          <div class="kpi-label">Active Retailers</div>
+        </div>
+        <div class="kpi-card kpi-green">
+          <div class="kpi-top"><div class="kpi-icon"><i data-lucide="package-check" style="width:22px;height:22px;stroke-width:1.8px;"></i></div></div>
+          <div class="kpi-val" id="retTotalRed">0</div>
+          <div class="kpi-label">Total Redemptions</div>
+        </div>
+        <div class="kpi-card kpi-blue">
+          <div class="kpi-top"><div class="kpi-icon"><i data-lucide="check-circle-2" style="width:22px;height:22px;stroke-width:1.8px;"></i></div></div>
+          <div class="kpi-val" id="retApproved">0</div>
+          <div class="kpi-label">Approved Orders</div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> Retailer Redemptions & Approvals (Top 12)</div></div>
+        <canvas id="retailerChart" height="260"></canvas>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> Retailer Detail Table</div></div>
+        <div class="table-wrap">
+          <table class="data-table" id="retTable">
+            <thead><tr>
+              <th>#</th><th>Retailer Name</th><th>Retailer ID</th>
+              <th>Total</th><th>Approved</th><th>Pending</th><th>Rejected</th>
+              <th>Qty Sold</th><th>Approval %</th>
+            </tr></thead>
+            <tbody id="retTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: DISTRICT ══════════════════════════════ -->
+    <div class="page-section" id="tab-district">
+      <div class="section-header">
+        <div class="section-title"><div class="section-title-accent"></div>District Insights</div>
+      </div>
+      <div class="grid-2">
+        <div class="card col-span-2">
+          <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> District-level Daily Performance</div></div>
+          <canvas id="districtTrendChart" height="240"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> District Scan Volume</div></div>
+          <canvas id="districtBarChart" height="280"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> District Approval Rate</div></div>
+          <canvas id="districtApprovalChart" height="280"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> District Performance Summary</div></div>
+        <div class="table-wrap">
+          <table class="data-table" id="districtTable">
+            <thead><tr>
+              <th>District</th><th>Total Scans</th><th>Approved</th>
+              <th>Pending</th><th>Rejected</th><th>Approval %</th>
+              <th>Unique Farmers</th><th>Active Retailers</th>
+            </tr></thead>
+            <tbody id="districtTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: SKU ════════════════════════════════════ -->
+    <div class="page-section" id="tab-sku">
+      <div class="section-header">
+        <div class="section-title"><div class="section-title-accent"></div>SKU Analysis</div>
+      </div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> SKU-wise Product Consumption</div></div>
+        <div class="sku-grid" id="skuGrid"></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> Product Volume (Quantity)</div></div>
+          <canvas id="skuQtyChart" height="280"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> Product Frequency (Orders)</div></div>
+          <canvas id="skuFreqChart" height="280"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> SKU Purchase Details</div></div>
+        <div class="table-wrap">
+          <table class="data-table" id="skuTable">
+            <thead><tr>
+              <th>Product</th><th>Variant</th><th>Total Qty</th>
+              <th>Order Count</th><th>Approved Qty</th><th>% of Total</th>
+            </tr></thead>
+            <tbody id="skuTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TAB: REPEAT FARMERS ════════════════════════ -->
+    <div class="page-section" id="tab-repeat">
+      <div class="section-header">
+        <div class="section-title"><div class="section-title-accent"></div>Repeat Farmers</div>
+      </div>
+      <div class="repeat-summary">
+        <div class="repeat-stat">
+          <div class="repeat-stat-val" id="repeatCount">0</div>
+          <div class="repeat-stat-label">Repeat Farmers</div>
+        </div>
+        <div class="repeat-stat">
+          <div class="repeat-stat-val" id="repeatTotal">0</div>
+          <div class="repeat-stat-label">Total Transactions</div>
+        </div>
+        <div class="repeat-stat">
+          <div class="repeat-stat-val" id="repeatAvg">0</div>
+          <div class="repeat-stat-label">Avg Transactions / Repeat</div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> Transaction Frequency Distribution</div></div>
+          <canvas id="repeatFreqChart" height="260"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> Repeat Farmer Trend (by Month)</div></div>
+          <canvas id="repeatTrendChart" height="260"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><div class="card-title-bar"></div> Repeat Farmer Records</div></div>
+        <div class="table-wrap">
+          <table class="data-table" id="repeatTable">
+            <thead><tr>
+              <th>Phone</th><th>Name</th><th>District</th>
+              <th>Transactions</th><th>First Scan</th><th>Last Scan</th>
+              <th>Products</th><th>Status</th>
+            </tr></thead>
+            <tbody id="repeatTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<footer class="footer">
+  <span>© 2025 Shriram Bioseed</span>
+  <div class="footer-dot"></div>
+  <span>Campaign Intelligence Platform</span>
+  <div class="footer-dot"></div>
+  <span>Uttar Pradesh & Chhattisgarh</span>
+</footer>
+
+<script>
+// ── DATA & STATE ──────────────────────────────────────────
+const CSV_URL = './data.csv';
+const REFERENCE_CSV_URL = './reference.csv';
+const MC_DATA_URL = './mc_data.csv';
+
+const USERS = {
+  'digicides': { password: 'farm@logy', role: 'user' },
+  'developer': { password: 'de^el0per', role: 'developer' }
+};
+
+const TARGET_DISTRICTS = ['Lucknow','Kanpur','Varanasi','Agra','Prayagraj','Raipur','Bilaspur','Durg','Korba','Jagdalpur'];
+
+let RAW = [], REFERENCE_DATA = [], MC_DATA = [];
+let REFERENCE_GRAND_TOTAL = null;
+let FILTERS = { dateFrom:'', dateTo:'', state:'', district:'', retailer:'', product:'', unit:'', status:'', source:'', pt:'', zone:'' };
+let csvLoaded = false, refLoaded = false, mcLoaded = false;
+
+// ── LOGIN ─────────────────────────────────────────────────
+const LS_KEY = 'shriram_bioseed_auth';
+if (localStorage.getItem(LS_KEY) === '1') unlockApp();
+
+function handleLogin(e) {
+  e.preventDefault();
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (USERS[u] && USERS[u].password === p) {
+    localStorage.setItem(LS_KEY, '1');
+    unlockApp();
+  } else {
+    document.getElementById('loginErr').textContent = 'Invalid credentials. Please try again.';
+  }
+}
+function unlockApp() { document.getElementById('loginOverlay').style.display = 'none'; }
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  if (confirm('Sign out of Shriram Bioseed Dashboard?')) {
+    localStorage.removeItem(LS_KEY);
+    location.reload();
+  }
+});
+
+// ── TABS ──────────────────────────────────────────────────
+const tabs = document.querySelectorAll('.page-tab');
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('tab-' + tab.dataset.tab).classList.add('active');
+    const rows = applyFilters(RAW);
+    renderTabCharts(tab.dataset.tab, rows);
+  });
+});
+
+// ── UTILITIES ────────────────────────────────────────────
+const trim = s => (s == null ? '' : String(s).trim());
+const toDateKey = dt => {
+  if (!dt) return '';
+  const d = new Date(trim(dt).replace(/-/g, '/'));
+  if (isNaN(d)) return '';
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+};
+const uniqSorted = arr => [...new Set(arr.filter(Boolean))].sort((a,b) => a.localeCompare(b));
+const fmt = n => Number(n).toLocaleString();
+const pct = (a,b) => b ? ((a/b)*100).toFixed(1)+'%' : '0%';
+
+function parseCartItems(str) {
+  const s = trim(str); if (!s) return [];
+  return s.split(',').map(raw => {
+    const t = raw.trim();
+    const m = t.match(/^(.+?)\s*-\s*qty\s*(\d+)(?:\s*-\s*(.+))?$/i);
+    if (m) return { name: trim(m[1]), qty: Number(m[2])||1, unit: m[3]?trim(m[3]):'' };
+    return { name: t, qty: 1, unit: '' };
+  });
+}
+function parseProductMap(str) {
+  const map = new Map();
+  parseCartItems(str).forEach(({ name, qty }) => map.set(name, (map.get(name)||0)+qty));
+  return map;
+}
+
+// ── FILTERS ──────────────────────────────────────────────
+function applyFilters(rows) {
+  const f = FILTERS;
+  return rows.filter(r => {
+    if (f.dateFrom||f.dateTo) {
+      const dk = toDateKey(trim(r['Scan Date']));
+      if (f.dateFrom && dk < f.dateFrom) return false;
+      if (f.dateTo && dk > f.dateTo) return false;
+    }
+    if (f.state && trim(r.State) !== f.state) return false;
+    if (f.district && trim(r.District) !== f.district) return false;
+    if (f.retailer && trim(r['Retailer Name']) !== f.retailer) return false;
+    if (f.status && trim(r['Submission Status']).toLowerCase() !== f.status.toLowerCase()) return false;
+    if (f.source && trim(r.Source) !== f.source) return false;
+    if (f.pt && trim(r.PT) !== f.pt) return false;
+    if (f.zone && trim(r.Zone) !== f.zone) return false;
+    if (f.product) { if (!parseProductMap(r['Cart Items']).has(f.product)) return false; }
+    if (f.unit) {
+      const has = parseCartItems(r['Cart Items']).some(it => f.product ? it.name===f.product&&it.unit===f.unit : it.unit===f.unit);
+      if (!has) return false;
+    }
+    return true;
+  });
+}
+
+function populateFilters(rows, refData, preserve = false) {
+  const fRows = preserve ? applyFilters(rows) : rows;
+  const states = uniqSorted(fRows.map(r => trim(r.State)));
+  const dists  = uniqSorted(fRows.map(r => trim(r.District)));
+  const rets   = uniqSorted(fRows.map(r => trim(r['Retailer Name'])));
+  const prods  = uniqSorted(fRows.flatMap(r => [...parseProductMap(r['Cart Items']).keys()]));
+  const units  = uniqSorted(fRows.flatMap(r => parseCartItems(r['Cart Items']).map(i=>i.unit).filter(Boolean)));
+  const srcs   = uniqSorted(fRows.map(r => trim(r.Source||'')).filter(Boolean));
+  const fRef = preserve && refData.length ? refData.filter(r => {
+    if (FILTERS.state && trim(r.State) !== FILTERS.state) return false;
+    return true;
+  }) : refData;
+  const pts  = uniqSorted([...fRows.map(r=>trim(r.PT||'')).filter(Boolean), ...fRef.map(r=>trim(r.Name||'')).filter(Boolean)]);
+  const zones= uniqSorted([...fRows.map(r=>trim(r.Zone||'')).filter(Boolean), ...fRef.map(r=>trim(r.ZONE||'')).filter(Boolean)]);
+
+  const fill = (selId, items, cur) => {
+    const sel = document.getElementById(selId);
+    sel.innerHTML = `<option value="">All (${items.length})</option>` + items.map(v => `<option value="${v}">${v}</option>`).join('');
+    if (preserve && items.includes(cur)) sel.value = cur;
+  };
+  fill('fState', states, FILTERS.state);
+  fill('fDistrict', dists, FILTERS.district);
+  fill('fRetailer', rets, FILTERS.retailer);
+  fill('fProduct', prods, FILTERS.product);
+  fill('fUnit', units, FILTERS.unit);
+  fill('fSource', srcs, FILTERS.source);
+  fill('fPT', pts, FILTERS.pt);
+  fill('fZone', zones, FILTERS.zone);
+
+  const statusSel = document.getElementById('fStatus');
+  statusSel.innerHTML = '<option value="">All Statuses</option><option value="Yes">Approved</option><option value="No">Rejected</option><option value="Pending">Pending</option>';
+  if (preserve) statusSel.value = FILTERS.status;
+}
+
+function attachFilters() {
+  flatpickr('#dateRange', {
+    mode: 'range', dateFormat: 'Y-m-d',
+    onChange: dates => {
+      if (dates.length === 2) {
+        const f = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+        FILTERS.dateFrom = f(dates[0]);
+        FILTERS.dateTo   = f(dates[1]);
+        populateFilters(RAW, REFERENCE_DATA, true);
+        render();
+      }
+    }
+  });
+  const binds = [
+    ['fState','state'],['fDistrict','district'],['fRetailer','retailer'],
+    ['fProduct','product'],['fUnit','unit'],['fStatus','status'],
+    ['fSource','source'],['fPT','pt'],['fZone','zone']
+  ];
+  binds.forEach(([id, key]) => {
+    document.getElementById(id).addEventListener('change', e => {
+      FILTERS[key] = e.target.value;
+      populateFilters(RAW, REFERENCE_DATA, true);
+      render();
+    });
+  });
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    FILTERS = { dateFrom:'',dateTo:'',state:'',district:'',retailer:'',product:'',unit:'',status:'',source:'',pt:'',zone:'' };
+    const fp = document.getElementById('dateRange')._flatpickr;
+    if (fp) fp.clear();
+    populateFilters(RAW, REFERENCE_DATA, false);
+    render();
+  });
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    const filtered = applyFilters(RAW);
+    if (!filtered.length) { alert('No data to export!'); return; }
+    const csv = Papa.unparse(filtered);
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+    a.download = `shriram_bioseed_export_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  });
+}
+
+// ── CHARTS CACHE ─────────────────────────────────────────
+const CHARTS = {};
+function makeChart(id, type, data, opts) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return null;
+  if (CHARTS[id]) { CHARTS[id].data = data; CHARTS[id].options = opts; CHARTS[id].update(); return CHARTS[id]; }
+  opts = { maintainAspectRatio: false, ...opts };
+  CHARTS[id] = new Chart(canvas.getContext('2d'), { type, data, options: opts });
+  return CHARTS[id];
+}
+
+const PALETTE = ['#1A7A3C','#E8620A','#1565C0','#6B21A8','#0D7377','#C97D10','#C0392B','#22A050','#F97316','#2DC76D','#FEA64A','#4CAF50'];
+function pal(n) { return Array.from({length:n},(_,i)=>PALETTE[i%PALETTE.length]); }
+
+const baseAxis = {
+  x: { grid:{color:'#EDF2EE',lineWidth:1}, ticks:{color:'#4B6356',font:{family:'DM Sans',size:11,weight:'600'}} },
+  y: { grid:{color:'#EDF2EE',lineWidth:1}, ticks:{color:'#4B6356',font:{family:'DM Sans',size:11,weight:'600'}} }
+};
+const baseLegend = {
+  labels:{ color:'#0D1F15', padding:18, font:{family:'DM Sans',size:12,weight:'600'}, usePointStyle:true, pointStyle:'circle' }
+};
+const baseTooltip = {
+  backgroundColor:'#FFFFFF', titleColor:'#0D1F15', bodyColor:'#4B6356',
+  padding:14, cornerRadius:10, borderColor:'#DDE8E1', borderWidth:1,
+  titleFont:{family:'DM Sans',size:13,weight:'700'},
+  bodyFont:{family:'DM Sans',size:12,weight:'500'},
+  boxPadding:5, usePointStyle:true,
+  callbacks:{ labelColor:function(ctx){ return { borderColor:'transparent', backgroundColor:ctx.dataset.backgroundColor }; } }
+};
+
+// ── RENDER ───────────────────────────────────────────────
+function render() {
+  const rows = applyFilters(RAW);
+  updateKPIs(rows);
+  const activeTab = document.querySelector('.page-tab.active')?.dataset?.tab || 'overview';
+  renderTabCharts(activeTab, rows);
+  setTimeout(() => { if(window.lucide) lucide.createIcons(); }, 100);
+}
+
+function renderTabCharts(tab, rows) {
+  if (tab === 'overview')  renderOverview(rows);
+  if (tab === 'fa')        renderFA(rows);
+  if (tab === 'retailer')  renderRetailer(rows);
+  if (tab === 'district')  renderDistrict(rows);
+  if (tab === 'sku')       renderSKU(rows);
+  if (tab === 'repeat')    renderRepeat(rows);
+}
+
+// ── KPIs ─────────────────────────────────────────────────
+function updateKPIs(rows) {
+  const total = rows.length;
+  const yes  = rows.filter(r => /^yes$/i.test(trim(r['Submission Status']))).length;
+  const no   = rows.filter(r => /^no$/i.test(trim(r['Submission Status']))).length;
+  const pend = rows.filter(r => /^pending$/i.test(trim(r['Submission Status']))).length;
+  const phones = rows.map(r => trim(r['Phone Number'])).filter(Boolean);
+  const uniquePhones = new Set(phones).size;
+  const rins = new Set(rows.map(r => trim(r['RIN'])).filter(Boolean));
+
+  let mc = 0, mcU = 0;
+  if (MC_DATA.length > 0) {
+    const filtMC = FILTERS.state ? MC_DATA.filter(r => trim(r.State||r.state||'') === FILTERS.state) : MC_DATA;
+    mc = filtMC.length;
+    mcU = new Set(filtMC.map(r => r.Grower||r.grower||r.Phone||'').filter(Boolean)).size;
+  } else if (REFERENCE_GRAND_TOTAL) {
+    mc = REFERENCE_GRAND_TOTAL.total;
+    mcU = REFERENCE_GRAND_TOTAL.unique;
+  }
+
+  document.getElementById('kTotalScans').textContent = fmt(total);
+  document.getElementById('kApproved').textContent = fmt(yes);
+  document.getElementById('kPending').textContent = fmt(pend);
+  document.getElementById('kRejected').textContent = fmt(no);
+  document.getElementById('kFarmers').textContent = fmt(phones.length);
+  document.getElementById('kRetailers').textContent = fmt(rins.size);
+  document.getElementById('kMissedCalls').textContent = fmt(mc);
+  document.getElementById('kUniqueCalls').textContent = fmt(mcU);
+  document.getElementById('kFarmersSub').textContent = fmt(uniquePhones)+' unique';
+  document.getElementById('kApprovedBadge').textContent = pct(yes,total);
+  document.getElementById('kPendingBadge').textContent = pct(pend,total);
+  document.getElementById('kRejectedBadge').textContent = pct(no,total);
+
+  setTimeout(() => {
+    document.getElementById('kApprovedBar').style.width = (total?yes/total*100:0)+'%';
+    document.getElementById('kPendingBar').style.width = (total?pend/total*100:0)+'%';
+    document.getElementById('kRejectedBar').style.width = (total?no/total*100:0)+'%';
+    document.getElementById('kFarmersBar').style.width = '70%';
+    document.getElementById('kRetailersBar').style.width = '60%';
+    document.getElementById('kMissedCallsBar').style.width = mc ? '80%' : '0%';
+    document.getElementById('kUniqueCallsBar').style.width = mcU ? '75%' : '0%';
+  }, 150);
+}
+
+// ── OVERVIEW ─────────────────────────────────────────────
+function renderOverview(rows) {
+  // Trend
+  const tMap = new Map();
+  rows.forEach(r => { const k = toDateKey(trim(r['Scan Date'])); if(k) tMap.set(k,(tMap.get(k)||0)+1); });
+  const trend = [...tMap].sort((a,b)=>a[0].localeCompare(b[0]));
+  const tCtx = document.getElementById('trendChart').getContext('2d');
+  const grad = tCtx.createLinearGradient(0,0,0,220);
+  grad.addColorStop(0,'rgba(26,122,60,.22)'); grad.addColorStop(1,'rgba(26,122,60,.02)');
+  makeChart('trendChart','line',{
+    labels: trend.map(x=>x[0]),
+    datasets:[{
+      label:'Scans', data:trend.map(x=>x[1]),
+      borderColor:'#1A7A3C', backgroundColor:grad, borderWidth:2.5,
+      tension:.4, fill:true, pointRadius:4, pointBackgroundColor:'#1A7A3C',
+      pointBorderColor:'#fff', pointBorderWidth:2.5
+    }]
+  },{ scales:baseAxis, plugins:{ legend:{display:false}, tooltip:baseTooltip }, interaction:{intersect:false,mode:'index'} });
+
+  // Status donut
+  const yes = rows.filter(r=>/^yes$/i.test(trim(r['Submission Status']))).length;
+  const no  = rows.filter(r=>/^no$/i.test(trim(r['Submission Status']))).length;
+  const pend= rows.filter(r=>/^pending$/i.test(trim(r['Submission Status']))).length;
+  makeChart('statusChart','doughnut',{
+    labels:['Approved','Pending','Rejected'],
+    datasets:[{ data:[yes,pend,no], backgroundColor:['#1A7A3C','#C97D10','#C0392B'], borderWidth:5, borderColor:'#fff', hoverOffset:10 }]
+  },{
+    cutout:'70%',
+    plugins:{
+      legend:{ ...baseLegend, position:'bottom',
+        labels:{ ...baseLegend.labels, generateLabels:chart=>{
+          return chart.data.labels.map((l,i)=>{
+            const v=chart.data.datasets[0].data[i];
+            const t=chart.data.datasets[0].data.reduce((a,b)=>a+b,0);
+            return { text:`${l}: ${fmt(v)} (${pct(v,t)})`, fillStyle:chart.data.datasets[0].backgroundColor[i], hidden:false, index:i };
+          });
+        }}
+      },
+      tooltip:baseTooltip
+    }
+  });
+
+  // Source
+  const srcMap = {};
+  rows.forEach(r=>{ const s=trim(r.Source||''); if(s) srcMap[s]=(srcMap[s]||0)+1; });
+  const srcArr = Object.entries(srcMap).sort((a,b)=>b[1]-a[1]);
+  makeChart('sourceChart','doughnut',{
+    labels: srcArr.map(x=>x[0]),
+    datasets:[{ data:srcArr.map(x=>x[1]), backgroundColor:pal(srcArr.length), borderWidth:5, borderColor:'#fff', hoverOffset:10 }]
+  },{
+    cutout:'68%',
+    plugins:{
+      legend:{ ...baseLegend, position:'bottom',
+        labels:{ ...baseLegend.labels, generateLabels:chart=>{
+          return chart.data.labels.map((l,i)=>{
+            const v=chart.data.datasets[0].data[i];
+            const t=chart.data.datasets[0].data.reduce((a,b)=>a+b,0);
+            return { text:`${l}: ${fmt(v)} (${pct(v,t)})`, fillStyle:chart.data.datasets[0].backgroundColor[i], hidden:false, index:i };
+          });
+        }}
+      },
+      tooltip:baseTooltip
+    }
+  });
+
+  // Channel
+  const fa = rows.filter(r=>trim(r.PT||'')).length;
+  const walkin = rows.length - fa;
+  makeChart('channelChart','doughnut',{
+    labels:['FA-Driven','Walk-in / Direct'],
+    datasets:[{ data:[fa,walkin], backgroundColor:['#1A7A3C','#E8620A'], borderWidth:5, borderColor:'#fff', hoverOffset:10 }]
+  },{
+    cutout:'68%',
+    plugins:{
+      legend:{ ...baseLegend, position:'bottom',
+        labels:{ ...baseLegend.labels, generateLabels:chart=>{
+          return chart.data.labels.map((l,i)=>{
+            const v=chart.data.datasets[0].data[i];
+            const t=chart.data.datasets[0].data.reduce((a,b)=>a+b,0);
+            return { text:`${l}: ${fmt(v)} (${pct(v,t)})`, fillStyle:chart.data.datasets[0].backgroundColor[i], hidden:false, index:i };
+          });
+        }}
+      },
+      tooltip:baseTooltip
+    }
+  });
+
+  renderMap(rows);
+}
+
+// ── FA TAB ────────────────────────────────────────────────
+function renderFA(rows) {
+  const faMap = {};
+  rows.forEach(r => {
+    const fa = trim(r.PT||''); if(!fa) return;
+    if(!faMap[fa]) faMap[fa]={yes:0,no:0,pending:0};
+    const s = trim(r['Submission Status']).toLowerCase();
+    if(s==='yes') faMap[fa].yes++;
+    else if(s==='no') faMap[fa].no++;
+    else if(s==='pending') faMap[fa].pending++;
+  });
+  const faArr = Object.entries(faMap)
+    .map(([name,d])=>({name,total:d.yes+d.no+d.pending,...d}))
+    .sort((a,b)=>b.total-a.total);
+
+  document.getElementById('faTotal').textContent = fmt(faArr.length);
+  document.getElementById('faAvgLeads').textContent = faArr.length ? Math.round(faArr.reduce((s,x)=>s+x.total,0)/faArr.length) : 0;
+  document.getElementById('faTopLeads').textContent = faArr.length ? faArr[0].total : 0;
+
+  const top = faArr.slice(0,15);
+  makeChart('faLeadsChart','bar',{
+    labels: top.map(x=>x.name),
+    datasets:[
+      { label:'Approved', data:top.map(x=>x.yes), backgroundColor:'#1A7A3C', borderRadius:5, barThickness:18 },
+      { label:'Pending', data:top.map(x=>x.pending), backgroundColor:'#C97D10', borderRadius:5, barThickness:18 },
+      { label:'Rejected', data:top.map(x=>x.no), backgroundColor:'#C0392B', borderRadius:5, barThickness:18 }
+    ]
+  },{ plugins:{legend:{...baseLegend,position:'top'}, tooltip:baseTooltip}, scales:{x:{...baseAxis.x},y:{...baseAxis.y}}, responsive:true });
+
+  makeChart('faStatusChart','bar',{
+    labels: top.map(x=>x.name),
+    datasets:[{ label:'Approval Rate %', data:top.map(x=>x.total?+(x.yes/x.total*100).toFixed(1):0), backgroundColor:pal(top.length), borderRadius:5, barThickness:20 }]
+  },{ plugins:{legend:{display:false}, tooltip:baseTooltip}, scales:{x:{...baseAxis.x},y:{...baseAxis.y,max:100}}, responsive:true });
+
+  const tbody = document.getElementById('faTableBody');
+  tbody.innerHTML = faArr.map((fa, i) => `
+    <tr>
+      <td class="mono">${i+1}</td>
+      <td style="font-weight:700;color:var(--text)">${fa.name}</td>
+      <td class="mono">${fmt(fa.total)}</td>
+      <td class="mono"><span class="badge badge-green">${fmt(fa.yes)}</span></td>
+      <td class="mono"><span class="badge badge-amber">${fmt(fa.pending)}</span></td>
+      <td class="mono"><span class="badge badge-red">${fmt(fa.no)}</span></td>
+      <td class="mono">${pct(fa.yes, fa.total)}</td>
+      <td style="min-width:130px">
+        <div style="display:flex;align-items:center;gap:9px">
+          <div class="prog-bar"><div class="prog-fill" style="width:${fa.total?(fa.yes/fa.total*100).toFixed(1):0}%;background:var(--brand-green)"></div></div>
+          <span style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace">${pct(fa.yes,fa.total)}</span>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// ── RETAILER TAB ──────────────────────────────────────────
+function renderRetailer(rows) {
+  const retMap = {};
+  rows.forEach(r => {
+    const name = trim(r['Retailer Name'])||'(Unknown)';
+    const rin  = trim(r['RIN'])||'—';
+    const key  = name+'|'+rin;
+    if(!retMap[key]) retMap[key]={name,rin,yes:0,no:0,pending:0,qty:0};
+    const s = trim(r['Submission Status']).toLowerCase();
+    if(s==='yes') retMap[key].yes++;
+    else if(s==='no') retMap[key].no++;
+    else if(s==='pending') retMap[key].pending++;
+    retMap[key].qty += parseCartItems(r['Cart Items']).reduce((s,i)=>s+i.qty,0);
+  });
+  const arr = Object.values(retMap).map(x=>({...x,total:x.yes+x.no+x.pending})).sort((a,b)=>b.total-a.total);
+
+  document.getElementById('retActive').textContent = fmt(arr.length);
+  document.getElementById('retTotalRed').textContent = fmt(arr.reduce((s,x)=>s+x.total,0));
+  document.getElementById('retApproved').textContent = fmt(arr.reduce((s,x)=>s+x.yes,0));
+
+  const top = arr.slice(0,12);
+  makeChart('retailerChart','bar',{
+    labels: top.map(x=>x.name),
+    datasets:[
+      { label:'Approved', data:top.map(x=>x.yes), backgroundColor:'#1A7A3C', borderRadius:5, barThickness:16 },
+      { label:'Pending', data:top.map(x=>x.pending), backgroundColor:'#C97D10', borderRadius:5, barThickness:16 },
+      { label:'Rejected', data:top.map(x=>x.no), backgroundColor:'#C0392B', borderRadius:5, barThickness:16 }
+    ]
+  },{ plugins:{legend:{...baseLegend,position:'top'}, tooltip:baseTooltip}, scales:{x:{...baseAxis.x},y:{...baseAxis.y}}, responsive:true });
+
+  const tbody = document.getElementById('retTableBody');
+  tbody.innerHTML = arr.map((ret,i)=>`
+    <tr>
+      <td class="mono">${i+1}</td>
+      <td style="font-weight:700;color:var(--text)">${ret.name}</td>
+      <td class="mono">${ret.rin}</td>
+      <td class="mono">${fmt(ret.total)}</td>
+      <td class="mono"><span class="badge badge-green">${fmt(ret.yes)}</span></td>
+      <td class="mono"><span class="badge badge-amber">${fmt(ret.pending)}</span></td>
+      <td class="mono"><span class="badge badge-red">${fmt(ret.no)}</span></td>
+      <td class="mono">${fmt(ret.qty)}</td>
+      <td class="mono">${pct(ret.yes,ret.total)}</td>
+    </tr>
+  `).join('');
+}
+
+// ── DISTRICT TAB ──────────────────────────────────────────
+function renderDistrict(rows) {
+  const dMap = {};
+  rows.forEach(r => {
+    const d = trim(r.District)||'Unknown';
+    if(!dMap[d]) dMap[d]={yes:0,no:0,pending:0,phones:new Set(),rins:new Set(),dates:{}};
+    const s = trim(r['Submission Status']).toLowerCase();
+    if(s==='yes') dMap[d].yes++;
+    else if(s==='no') dMap[d].no++;
+    else if(s==='pending') dMap[d].pending++;
+    if(trim(r['Phone Number'])) dMap[d].phones.add(trim(r['Phone Number']));
+    if(trim(r['RIN'])) dMap[d].rins.add(trim(r['RIN']));
+    const dk = toDateKey(trim(r['Scan Date']));
+    if(dk) dMap[d].dates[dk]=(dMap[d].dates[dk]||0)+1;
+  });
+  const arr = Object.entries(dMap).map(([name,d])=>({name,...d,total:d.yes+d.no+d.pending})).sort((a,b)=>b.total-a.total);
+  const top5 = arr.slice(0,5);
+  const allDates = [...new Set(rows.map(r=>toDateKey(trim(r['Scan Date']))).filter(Boolean))].sort();
+  const tColors = ['#1A7A3C','#E8620A','#1565C0','#6B21A8','#0D7377'];
+
+  makeChart('districtTrendChart','line',{
+    labels: allDates,
+    datasets: top5.map((d,i)=>({
+      label:d.name, data:allDates.map(dk=>d.dates[dk]||0),
+      borderColor:tColors[i], backgroundColor:'transparent',
+      borderWidth:2.5, tension:.4, pointRadius:3
+    }))
+  },{ scales:baseAxis, plugins:{ legend:{...baseLegend,position:'top'}, tooltip:baseTooltip }, interaction:{intersect:false,mode:'index'} });
+
+  makeChart('districtBarChart','bar',{
+    labels: arr.map(x=>x.name),
+    datasets:[{ label:'Total Scans', data:arr.map(x=>x.total), backgroundColor:pal(arr.length), borderRadius:5 }]
+  },{ indexAxis:'y', plugins:{legend:{display:false}, tooltip:baseTooltip}, scales:{x:{...baseAxis.x},y:{...baseAxis.y}} });
+
+  makeChart('districtApprovalChart','bar',{
+    labels: arr.map(x=>x.name),
+    datasets:[{ label:'Approval Rate %', data:arr.map(x=>x.total?+(x.yes/x.total*100).toFixed(1):0), backgroundColor:'#1A7A3C', borderRadius:5 }]
+  },{ plugins:{legend:{display:false}, tooltip:baseTooltip}, scales:{x:{...baseAxis.x},y:{...baseAxis.y,max:100}} });
+
+  const tbody = document.getElementById('districtTableBody');
+  tbody.innerHTML = arr.map(d=>`
+    <tr>
+      <td style="font-weight:700;color:var(--text)">${d.name}${TARGET_DISTRICTS.includes(d.name)?'<span class="badge badge-target" style="margin-left:8px;font-size:10px">Target</span>':''}</td>
+      <td class="mono">${fmt(d.total)}</td>
+      <td class="mono"><span class="badge badge-green">${fmt(d.yes)}</span></td>
+      <td class="mono"><span class="badge badge-amber">${fmt(d.pending)}</span></td>
+      <td class="mono"><span class="badge badge-red">${fmt(d.no)}</span></td>
+      <td class="mono">${pct(d.yes,d.total)}</td>
+      <td class="mono">${fmt(d.phones.size)}</td>
+      <td class="mono">${fmt(d.rins.size)}</td>
+    </tr>
+  `).join('');
+}
+
+// ── SKU TAB ───────────────────────────────────────────────
+function renderSKU(rows) {
+  const skuMap = {};
+  rows.forEach(r => {
+    const approved = /^yes$/i.test(trim(r['Submission Status']));
+    parseCartItems(r['Cart Items']).forEach(({name,qty,unit}) => {
+      const key = name+'|'+(unit||'');
+      if(!skuMap[key]) skuMap[key]={name,unit,qty:0,count:0,approvedQty:0};
+      skuMap[key].qty+=qty; skuMap[key].count++;
+      if(approved) skuMap[key].approvedQty+=qty;
+    });
+  });
+  const arr = Object.values(skuMap).sort((a,b)=>b.qty-a.qty);
+  const totalQty = arr.reduce((s,x)=>s+x.qty,0);
+
+  const skuGrid = document.getElementById('skuGrid');
+  skuGrid.innerHTML = arr.map(s=>`
+    <div class="sku-card">
+      <div class="sku-name">${s.name}</div>
+      <div class="sku-variant">${s.unit||'Mixed'}</div>
+      <div class="sku-qty">${fmt(s.qty)}</div>
+      <div class="sku-unit">units · ${s.count} orders</div>
+    </div>
+  `).join('');
+
+  makeChart('skuQtyChart','bar',{
+    labels: arr.map(x=>x.name+(x.unit?' ('+x.unit+')':'')),
+    datasets:[{ label:'Quantity', data:arr.map(x=>x.qty), backgroundColor:pal(arr.length), borderRadius:5 }]
+  },{ indexAxis:'y', plugins:{legend:{display:false}, tooltip:baseTooltip}, scales:{x:{...baseAxis.x},y:{...baseAxis.y}} });
+
+  makeChart('skuFreqChart','bar',{
+    labels: arr.map(x=>x.name+(x.unit?' ('+x.unit+')':'')),
+    datasets:[{ label:'Orders', data:arr.map(x=>x.count), backgroundColor:pal(arr.length), borderRadius:5 }]
+  },{ indexAxis:'y', plugins:{legend:{display:false}, tooltip:baseTooltip}, scales:{x:{...baseAxis.x},y:{...baseAxis.y}} });
+
+  const tbody = document.getElementById('skuTableBody');
+  tbody.innerHTML = arr.map(s=>`
+    <tr>
+      <td style="font-weight:700;color:var(--text)">${s.name}</td>
+      <td>${s.unit||'—'}</td>
+      <td class="mono">${fmt(s.qty)}</td>
+      <td class="mono">${fmt(s.count)}</td>
+      <td class="mono">${fmt(s.approvedQty)}</td>
+      <td class="mono">${pct(s.qty,totalQty)}</td>
+    </tr>
+  `).join('');
+}
+
+// ── REPEAT FARMERS ────────────────────────────────────────
+function renderRepeat(rows) {
+  const farmerMap = {};
+  rows.forEach(r => {
+    const ph = trim(r['Phone Number']); if(!ph) return;
+    if(!farmerMap[ph]) farmerMap[ph]={
+      phone:ph, name:(trim(r['First Name'])+' '+trim(r['Last Name'])).trim()||'—',
+      district:trim(r.District)||'—', dates:[], products:new Set(), statuses:[]
+    };
+    farmerMap[ph].dates.push(toDateKey(trim(r['Scan Date']))||'');
+    farmerMap[ph].statuses.push(trim(r['Submission Status']));
+    parseCartItems(r['Cart Items']).forEach(i=>farmerMap[ph].products.add(i.name));
+  });
+  const repeatFarmers = Object.values(farmerMap).filter(f=>f.dates.length>1).sort((a,b)=>b.dates.length-a.dates.length);
+
+  document.getElementById('repeatCount').textContent = fmt(repeatFarmers.length);
+  const totalTx = repeatFarmers.reduce((s,f)=>s+f.dates.length,0);
+  document.getElementById('repeatTotal').textContent = fmt(totalTx);
+  document.getElementById('repeatAvg').textContent = repeatFarmers.length ? (totalTx/repeatFarmers.length).toFixed(1) : '0';
+
+  const freqDist = {};
+  repeatFarmers.forEach(f=>{ const c=f.dates.length; freqDist[c]=(freqDist[c]||0)+1; });
+  const freqArr = Object.entries(freqDist).sort((a,b)=>a[0]-b[0]);
+  makeChart('repeatFreqChart','bar',{
+    labels: freqArr.map(x=>x[0]+' transactions'),
+    datasets:[{ label:'Farmers', data:freqArr.map(x=>x[1]), backgroundColor:'#1A7A3C', borderRadius:5 }]
+  },{ plugins:{legend:{display:false}, tooltip:baseTooltip}, scales:{x:{...baseAxis.x},y:{...baseAxis.y}} });
+
+  const monthMap = {};
+  repeatFarmers.forEach(f=>f.dates.forEach(dk=>{
+    if(!dk) return;
+    const m = dk.slice(0,7);
+    if(!monthMap[m]) monthMap[m]=new Set();
+    monthMap[m].add(f.phone);
+  }));
+  const monthArr = Object.entries(monthMap).sort((a,b)=>a[0].localeCompare(b[0]));
+  makeChart('repeatTrendChart','line',{
+    labels: monthArr.map(x=>x[0]),
+    datasets:[{ label:'Repeat Farmer Interactions', data:monthArr.map(x=>x[1].size), borderColor:'#6B21A8', backgroundColor:'rgba(107,33,168,.1)', fill:true, tension:.4, borderWidth:2.5 }]
+  },{ scales:baseAxis, plugins:{legend:{display:false}, tooltip:baseTooltip} });
+
+  const tbody = document.getElementById('repeatTableBody');
+  tbody.innerHTML = repeatFarmers.slice(0,100).map(f=>{
+    const sorted = f.dates.filter(Boolean).sort();
+    const latestStatus = f.statuses[f.statuses.length-1]||'—';
+    const bc = /yes/i.test(latestStatus)?'badge-green':/no/i.test(latestStatus)?'badge-red':'badge-amber';
+    return `<tr>
+      <td class="mono">${f.phone}</td>
+      <td style="font-weight:700;color:var(--text)">${f.name}</td>
+      <td>${f.district}</td>
+      <td class="mono"><strong>${f.dates.length}</strong></td>
+      <td class="mono">${sorted[0]||'—'}</td>
+      <td class="mono">${sorted[sorted.length-1]||'—'}</td>
+      <td style="font-size:12px">${[...f.products].join(', ')||'—'}</td>
+      <td><span class="badge ${bc}">${latestStatus}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── MAP ───────────────────────────────────────────────────
+let map = null, mapLayerGroup = null;
+const STATE_COORDS = {
+  'Uttar Pradesh':[26.84,80.94],'Chhattisgarh':[21.27,81.86],
+  'West Bengal':[22.98,87.85],'Andhra Pradesh':[15.91,79.74],'Telangana':[18.11,79.01],
+  'Karnataka':[15.31,75.71],'Maharashtra':[19.75,75.71],'Bihar':[25.09,85.31],
+  'Tamil Nadu':[11.12,78.65],'Odisha':[20.95,85.09],'Rajasthan':[27.02,74.21],
+  'Madhya Pradesh':[22.97,78.65],'Gujarat':[22.25,71.19],'Punjab':[31.14,75.34],
+  'Haryana':[29.05,76.08],'Kerala':[10.85,76.27],'Assam':[26.20,92.93],
+  'Jharkhand':[23.61,85.27],'Delhi':[28.70,77.10]
+};
+
+function renderMap(rows) {
+  if (!map) {
+    map = L.map('mapContainer',{center:[24.5,81.5],zoom:5,minZoom:4,maxZoom:10,zoomControl:true});
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'©OpenStreetMap ©Carto',maxZoom:19}).addTo(map);
+  }
+  if (mapLayerGroup) mapLayerGroup.remove();
+  mapLayerGroup = L.layerGroup().addTo(map);
+
+  const stateData = {};
+  rows.forEach(r=>{
+    const st=trim(r.State); if(!st) return;
+    if(!stateData[st]) stateData[st]={total:0,yes:0,no:0,pend:0};
+    stateData[st].total++;
+    const s=trim(r['Submission Status']).toLowerCase();
+    if(s==='yes') stateData[st].yes++;
+    else if(s==='no') stateData[st].no++;
+    else if(s==='pending') stateData[st].pend++;
+  });
+
+  Object.entries(stateData).forEach(([st,d])=>{
+    const coords = STATE_COORDS[st]; if(!coords) return;
+    const rate = d.total>0?(d.yes/d.total*100).toFixed(0):0;
+    const isTarget = st==='Uttar Pradesh'||st==='Chhattisgarh';
+    const color = isTarget ? '#1A7A3C' : '#E8620A';
+
+    const icon = L.divIcon({
+      className:'',
+      html:`<div class="map-marker-div" style="border-color:${color};color:${color}">
+        <div class="map-marker-count">${d.yes>999?Math.round(d.yes/1000)+'k':d.yes||d.total}</div>
+        <div class="map-marker-label">${rate}% apr</div>
+      </div>`,
+      iconSize:[64,64], iconAnchor:[32,32]
+    });
+
+    const m = L.marker(coords,{icon});
+    m.bindPopup(`
+      <div class="map-popup">
+        <div class="map-popup-head">
+          <h4>${st}</h4>
+          <p>${isTarget ? '🎯 Target State' : 'Campaign Activity'}</p>
+        </div>
+        <div class="map-popup-body">
+          <div class="map-row"><span class="map-row-label">✅ Approved</span><span class="map-row-val" style="color:#1A7A3C">${fmt(d.yes)}</span></div>
+          <div class="map-row"><span class="map-row-label">⏳ Pending</span><span class="map-row-val" style="color:#C97D10">${fmt(d.pend)}</span></div>
+          <div class="map-row"><span class="map-row-label">❌ Rejected</span><span class="map-row-val" style="color:#C0392B">${fmt(d.no)}</span></div>
+          <div class="map-row"><span class="map-row-label">📊 Total</span><span class="map-row-val">${fmt(d.total)}</span></div>
+          <div class="map-row"><span class="map-row-label">🎯 Approval Rate</span><span class="map-row-val" style="color:#1A7A3C">${rate}%</span></div>
+        </div>
+      </div>`,{maxWidth:280}).addTo(mapLayerGroup);
+    m.on('click',()=>{ document.getElementById('fState').value=st; FILTERS.state=st; populateFilters(RAW,REFERENCE_DATA,true); render(); });
+  });
+  setTimeout(()=>map.invalidateSize(),200);
+}
+
+// ── DATA LOADING ──────────────────────────────────────────
+function normalizeRow(r) {
+  return {
+    'User ID': r['User ID']||r['UserID']||'',
+    'Phone Number': r['Phone Number']||r['Phone']||'',
+    'First Name': r['First Name']||r['FirstName']||'',
+    'Last Name': r['Last Name']||r['LastName']||'',
+    'District': r['District']||'',
+    'State': r['State']||'',
+    'Language': r['Language']||'',
+    'Pin Code': r['Pin Code']||r['Pincode']||'',
+    'QR Code': r['QR Code']||'',
+    'Land Acreage': r['Land Acreage']||'',
+    'Crop Name': r['Crop Name']||'',
+    'Scan Date': r['Scan Date']||r['Date']||'',
+    'RIN': r['RIN']||'',
+    'Retailer Name': r['Retailer Name']||r['Retailer']||'',
+    'Cart Items': r['Cart Items']||'',
+    'Coupon Code': r['Coupon Code']||'',
+    'Submission Status': r['Submission Status']||'',
+    'Source': r['Source']||'',
+    'PT': r['PT']||'',
+    'Zone': r['Zone']||''
+  };
+}
+
+function checkAllLoaded() {
+  if (csvLoaded && refLoaded && mcLoaded) {
+    populateFilters(RAW, REFERENCE_DATA, false);
+    attachFilters();
+    render();
+    if(window.lucide) lucide.createIcons();
+  }
+}
+
+Papa.parse(CSV_URL, {
+  download:true, header:true, skipEmptyLines:true, dynamicTyping:false,
+  complete: res => { RAW = res.data.map(normalizeRow); csvLoaded = true; checkAllLoaded(); },
+  error: () => { csvLoaded = true; checkAllLoaded(); }
+});
+
+Papa.parse(REFERENCE_CSV_URL, {
+  download:true, header:true, skipEmptyLines:true, dynamicTyping:false,
+  complete: res => {
+    const all = res.data;
+    REFERENCE_DATA = all.filter(r=>!trim(r.Name||'').toLowerCase().includes('grand total'));
+    const gt = all.find(r=>trim(r.Name||'').toLowerCase().includes('grand total'));
+    if(gt) REFERENCE_GRAND_TOTAL = { total:Number(gt['Total Missed Calls'])||0, unique:Number(gt['Total Unique Missed Calls'])||0 };
+    refLoaded = true; loadMC();
+  },
+  error: () => { refLoaded = true; loadMC(); }
+});
+
+function loadMC() {
+  Papa.parse(MC_DATA_URL, {
+    download:true, header:true, skipEmptyLines:true, dynamicTyping:false,
+    complete: res => { MC_DATA = res.data; mcLoaded = true; checkAllLoaded(); },
+    error: () => { MC_DATA = []; mcLoaded = true; checkAllLoaded(); }
+  });
+}
+
+// Init lucide icons
+document.addEventListener('DOMContentLoaded', () => {
+  if(window.lucide) lucide.createIcons();
+});
+</script>
+</body>
+</html>
