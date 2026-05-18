@@ -1,47 +1,12 @@
 User ID,Phone Number,First Name,Last Name,District,State,Language,Pin Code,QR Code,Land Acreage,Crop Name,Scan Date,RIN,Retailer Name,Cart Items,Coupon Code,Submission Status,Source,PT,Zone
-1,8320202852,Nikita,,AHD,GUJARAT,en_IN,,,,arecanut,26-04-2026 12:14,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",115838,Pending,Direct Landing Page,,
-2,8320202852,Nikita,,AHD,GUJARAT,en_IN,,,,arecanut,26-04-2026 12:21,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",123757,Pending,Direct Landing Page,,
-3,8320202852,Nikita,,AHD,GUJARAT,en_IN,,,,arecanut,26-04-2026 12:41,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",131676,Pending,Direct Landing Page,,
-4,8320202852,Nikita,,AHD,GUJARAT,en_IN,,,,arecanut,26-04-2026 12:47,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",139595,Pending,Direct Landing Page,,
-5,8320202852,Nikita,,AHD,GUJARAT,en_IN,,,,arecanut,26-04-2026 12:53,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",147514,Pending,Direct Landing Page,,
-6,8320202852,Nikita,,AHD,GUJARAT,en_IN,,,,arecanut,26-04-2026 12:54,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",155433,Yes,Direct Landing Page,,
-7,8320202852,Nikita,,AHD,GUJARAT,hi_IN,,,,arecanut,26-04-2026 13:00,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",163352,Yes,Direct Landing Page,,
-8,8320202852,Nikita,,AHD,GUJARAT,hi_IN,,,,arecanut,26-04-2026 13:06,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",171271,Yes,Direct Landing Page,,
-9,8320202852,Nikita,,AHD,GUJARAT,hi_IN,,,,arecanut,26-04-2026 13:08,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",179190,Yes,Direct Landing Page,,
-10,8320202852,Nikita,,AHD,GUJARAT,en_IN,,,,arecanut,26-04-2026 13:11,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",187109,No,Direct Landing Page,,
-11,8320202852,Nikita,,AHD,GUJARAT,hi_IN,,,,arecanut,26-04-2026 13:16,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",195028,No,Direct Landing Page,,
-12,8320202852,Nikita,,AHD,GUJARAT,hi_IN,,,,arecanut,27-04-2026 09:03,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",202947,Yes,Direct Landing Page,,
-13,8320202852,Nikita,,AHD,GUJARAT,hi_IN,,,,arecanut,27-04-2026 22:45,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",210866,Yes,Direct Landing Page,,
-14,7908117847,Ankita,,Auraiya,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 08:46,20307,Ankita,"Bioseed ultimax Gajraj x1 (3Kg),Bioseed ultimax Pushpa x1 (3Kg)",226704,No,Direct Landing Page,,
-15,7908117847,Ankita,,Auraiya,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 08:47,20307,Ankita,"Bioseed ultimax Gajraj x1 (3Kg),Bioseed ultimax Pushpa x1 (3Kg)",226704,Yes,Direct Landing Page,,
-16,7042111086,Saswati,Bag,Auraiya,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 13:13,20307,Ankita,Bioseed BH21 x1 (3Kg),274218,Yes,Direct Landing Page,,
-17,7908117847,Ankita,,Unnao,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 13:23,20307,Ankita,Bioseed ultimax Gajraj x1 (3Kg),100014,Yes,Missedcall,Viresh Kumar,AGRA NORTH
-18,7908117847,Ankita,,Auraiya,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 13:29,20307,Ankita,Bioseed ultimax Gajraj x2 (3Kg),282137,No,Direct Landing Page,,
-19,8320202852,Nikita,,AHD,GUJARAT,hi_IN,,,,arecanut,29-04-2026 14:27,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",290056,Yes,Direct Landing Page,,
-20,7908117847,Ankita,,Kannauj,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 17:12,20307,Ankita,"Bioseed ultimax Gajraj x1 (3Kg),Basanti x1 (3Kg)",297975,No,Direct Landing Page,,
 21,8944954945,kakali,roy,Kannauj,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 17:19,20307,Ankita,Bioseed ultimax Gajraj x2 (3Kg),100400,Yes,Missedcall,Viresh Kumar,AGRA NORTH
-22,8318851733,Nikita,,Jaunpur,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 18:24,20307,Ankita,"Bioseed ultimax Gajraj x1 (3Kg),Bioseed 4786 x2 (3Kg)",100327,Yes,Missedcall,Viresh Kumar,AGRA NORTH
-23,7908117847,Ankita,,Auraiya,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 18:25,20307,Ankita,Bioseed ultimax Pushpa x1 (3Kg),100419,Yes,Missedcall,Viresh Kumar,AGRA NORTH
-24,7908117847,Ankita,,Narayanpur,Chhattisgarh,hi_IN,,,,paddy,29-04-2026 18:27,20307,Ankita,Bioseed ultimax Gajraj x2 (3Kg),305894,Yes,Direct Landing Page,,
-25,8447302576,Jeetaditya,Das,Auraiya,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 18:28,20307,Ankita,"Bioseed ultimax Gajraj x1 (3Kg),Bioseed ultimax Pushpa x1 (3Kg)",242542,Yes,Direct Landing Page,,
-26,8317001690,Shreya,,Auraiya,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 18:58,20307,Ankita,Bioseed ultimax Gajraj x2 (3Kg),100353,Pending,Missedcall,Viresh Kumar,AGRA NORTH
-27,7908117847,Ankita,,Auraiya,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 18:58,20307,Ankita,Bioseed ultimax Gajraj x1 (3Kg),313813,Yes,Direct Landing Page,,
-28,7042111086,Saswati,Bag,Narayanpur,Chhattisgarh,hi_IN,,,,paddy,29-04-2026 18:58,20307,Ankita,"Bioseed 4786 x1 (3Kg),Bioseed ultimax Pushpa x2 (3Kg),Bioseed ultimax Gajraj x1 (3Kg)",100426,No,Missedcall,Shubham Thakur,KANNAUJ NORTH
-29,8447302576,Jeetaditya,Das,Kabirdham,Chhattisgarh,hi_IN,,,,paddy,29-04-2026 18:59,20307,Ankita,Bioseed ultimax Gajraj x1 (3Kg),250461,Yes,Direct Landing Page,,
-30,6395687260,Ankush,Kumar,Jashpur,Chhattisgarh,hi_IN,,,,paddy,29-04-2026 19:00,20307,Ankita,"Bioseed ultimax Pushpa x1 (3Kg),Bioseed ultimax Gajraj x1 (3Kg),Basanti x1 (3Kg),Bioseed 4786 x1 (3Kg),Bioseed BH21 x1 (3Kg)",234623,Yes,Direct Landing Page,,
 31,9109384499,Ram,dayal Patel,Surguja,Chhattisgarh,hi_IN,,,,paddy,29-04-2026 19:16,20307,Ankita,Bioseed ultimax Gajraj x4 (3Kg),100306,Yes,Missedcall,Viresh Kumar,AGRA NORTH
 32,9425270550,Anish,Dev,Surguja,Chhattisgarh,hi_IN,,,,paddy,29-04-2026 19:16,20307,Ankita,Bioseed ultimax Gajraj x1 (3Kg),329651,Yes,Direct Landing Page,,
 33,8126278003,100433,Jitendra Kumar,Budaun,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 19:17,20307,Ankita,Basanti x2 (3Kg),100433,No,Missedcall,Viresh Kumar,AGRA NORTH
 34,9454514190,Gaurav,Singh,Aligarh,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 19:18,20307,Ankita,Basanti x2 (3Kg),100047,Yes,Missedcall,Viresh Kumar,AGRA NORTH
-35,7908117847,Ankita,,Unnao,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 19:20,20307,Ankita,Bioseed ultimax Gajraj x2 (3Kg),321732,No,Direct Landing Page,,
 36,8923180404,Anish,Rai,Auraiya,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 19:20,20307,Ankita,Basanti x4 (3Kg),100266,Yes,Missedcall,Anish Kumar Rai,KANNAUJ NORTH
 37,8542844132,ARUN,DWIVEDI,Kannauj,Uttar Pradesh,hi_IN,,,,paddy,29-04-2026 19:20,20307,Ankita,Basanti x1 (3Kg),100280,Yes,Missedcall,Arun Dwivedi,KANNAUJ NORTH
 38,7754073461,MANJEET,KUMAR,Jashpur,Chhattisgarh,hi_IN,,,,paddy,29-04-2026 19:20,20307,Ankita,Bioseed ultimax Gajraj x2 (3Kg),337570,No,Direct Landing Page,,
-39,6395687260,Ankush,Kumar,Kabirdham,Chhattisgarh,hi_IN,,,,paddy,30-04-2026 15:41,20307,Ankita,"Bioseed ultimax Gajraj x1 (3Kg),Bioseed ultimax Pushpa x1 (3Kg)",101224,Yes,Missedcall,Ravi Nand,KANNAUJ NORTH
-40,8317001690,Shreya,,Kannauj,Uttar Pradesh,hi_IN,,,,paddy,30-04-2026 15:58,20307,Ankita,Bioseed ultimax Gajraj x1 (3Kg),101264,Yes,Missedcall,Viresh Kumar,AGRA NORTH
-41,7908117847,Ankita,,Kannauj,Uttar Pradesh,hi_IN,,,,paddy,01-05-2026 15:47,20307,Ankita,Bioseed ultimax Gajraj x2 (3Kg),101344,Yes,Missedcall,Ravi Nand,KANNAUJ NORTH
-42,8320202852,Nikita,,AHD,GUJARAT,hi_IN,,,,arecanut,06-05-2026 10:11,20294,VOFFICE,"Product 1 x2 (100ml),Product 2 x3 (100ml)",100367,Yes,Missedcall,Viresh Kumar,AGRA NORTH
-43,7908117847,Ankita,,Kannauj,Uttar Pradesh,hi_IN,,,,paddy,06-05-2026 11:42,23506,ROSHAN BEEJ BHANDAR,Bioseed ultimax Gajraj x1 (3Kg),353408,Pending,Direct Landing Page,,
 44,9695227193,Raju,Yadav,Kanpur Dehat,Uttar Pradesh,hi_IN,,,,paddy,12-05-2026 11:08,25187,Abhinav  Traders,Basanti x6 (3Kg),110367,Pending,Missedcall,Ravi Nand,KANNAUJ NORTH
 45,7905541448,Sandeep,Kumar  Kumar,Fatehpur,Uttar Pradesh,hi_IN,,,,paddy,13-05-2026 12:09,25325,Shankar Beej Bhandar,Basanti x2 (3Kg),377165,Pending,Direct Landing Page,,
 46,9634346530,Shashwat,Gupta,Moradabad,Uttar Pradesh,hi_IN,,,,paddy,13-05-2026 14:24,26574,KRISHAK SEWA,Basanti x2 (3Kg),103159,Pending,Missedcall,Sanjay Kumar Yadav,BAREILLY NORTH
@@ -67,10 +32,7 @@ User ID,Phone Number,First Name,Last Name,District,State,Language,Pin Code,QR Co
 66,8273480527,Dharmendra,Singh,Moradabad,Uttar Pradesh,hi_IN,,,,paddy,14-05-2026 11:07,26951,Pathak agency,Bioseed ultimax Pushpa x2 (3Kg),113345,Yes,Missedcall,Durgendra Pratap Singh,BAREILLY NORTH
 67,8960911490,Savle,Pandey,Sitapur,Uttar Pradesh,hi_IN,,,,paddy,14-05-2026 11:28,24437,PANDEY TRADING COMPANY,Bioseed ultimax Gajraj x1 (3Kg),113432,Yes,Missedcall,Upendra Kumar Tiwari,LUCKNOW NORTH
 68,8840061947,Raju,Singh,Kannauj,Uttar Pradesh,hi_IN,,,,paddy,14-05-2026 11:40,25187,Abhinav  Traders,"Bioseed ultimax Gajraj x5 (3Kg),Basanti x5 (3Kg)",113439,Pending,Missedcall,Ravi Nand,KANNAUJ NORTH
-69,7908117847,Ankita,,Unnao,Uttar Pradesh,hi_IN,,,,paddy,14-05-2026 11:43,26986,MAURYA BEEJ BHANDAR,Bioseed ultimax Gajraj x1 (3Kg),361327,Pending,Direct Landing Page,,
 70,6395793564,Jitendra,Yadav,Moradabad,Uttar Pradesh,hi_IN,,,,paddy,14-05-2026 11:43,5687,Radhesh kumar and brothers,Basanti x4 (3Kg),113465,Pending,Missedcall,Durgendra Pratap Singh,BAREILLY NORTH
-71,7908117847,Ankita,,Unnao,Uttar Pradesh,hi_IN,,,,paddy,14-05-2026 11:44,26995,SINGH BEEJ BHANDAR,Bioseed ultimax Gajraj x1 (3Kg),598897,Pending,Direct Landing Page,,
-72,7908117847,Ankita,,Auraiya,Uttar Pradesh,hi_IN,,,,paddy,14-05-2026 11:46,27000,VERMA KRISHI SEWA KENDRA,Bioseed ultimax Gajraj x1 (3Kg),606816,Pending,Direct Landing Page,,
 73,9026400753,Sompal,Yadav,Sitapur,Uttar Pradesh,hi_IN,,,,paddy,14-05-2026 11:50,24437,PANDEY TRADING COMPANY,Bioseed ultimax Gajraj x2 (3Kg),113458,Pending,Missedcall,Upendra Kumar Tiwari,LUCKNOW NORTH
 74,9258961738,Arvind,Yadav,Moradabad,Uttar Pradesh,hi_IN,,,,paddy,14-05-2026 11:53,5687,Radhesh kumar and brothers,Basanti x1 (3Kg),113491,Pending,Missedcall,Durgendra Pratap Singh,BAREILLY NORTH
 75,9452714752,Upendra,Kumar  Tiwari,Sitapur,Uttar Pradesh,hi_IN,,,,paddy,14-05-2026 12:05,24438,ANAND KRISHI NEW TAKNIKI KENDRA,"Bioseed ultimax Gajraj x1 (3Kg),Bioseed ultimax Pushpa x1 (3Kg)",100153,Pending,Missedcall,Upendra Kumar Tiwari,LUCKNOW NORTH
@@ -164,7 +126,6 @@ User ID,Phone Number,First Name,Last Name,District,State,Language,Pin Code,QR Co
 163,9651600369,Ahkilesh,Kumar,Fatehpur,Uttar Pradesh,hi_IN,,,,paddy,15-05-2026 16:46,25336,Shiv Beej Bhandar,Basanti x12 (3Kg),372012,Pending,Direct Landing Page,,
 164,9759265390,Pawan,Sharma,Moradabad,Uttar Pradesh,hi_IN,,,,paddy,15-05-2026 16:52,26951,Pathak agency,Basanti x3 (3Kg),379931,Yes,Direct Landing Page,,
 165,9935186171,Ankit,Verma,Unnao,Uttar Pradesh,hi_IN,,,,paddy,15-05-2026 16:56,25175,Krishi sewa kendar,Basanti x2 (3Kg),115120,Yes,Missedcall,Ravi Nand,KANNAUJ NORTH
-166,7908117847,Ankita,,Unnao,Uttar Pradesh,hi_IN,,,,paddy,15-05-2026 16:57,20307,Ankita,Bioseed ultimax Gajraj x1 (3Kg),403688,Yes,Direct Landing Page,,
 167,7236890306,Rajan,Maurya,Fatehpur,Uttar Pradesh,hi_IN,,,,paddy,15-05-2026 17:09,25391,Virendra Khad Bhandar,Bioseed ultimax Gajraj x5 (3Kg),419526,Pending,Direct Landing Page,,
 168,7800439582,Rishabh,PATEL,Sitapur,Uttar Pradesh,hi_IN,,,,paddy,15-05-2026 17:41,24312,NEW RAIN BEEJ BHANDAR,"Bioseed ultimax Gajraj x1 (3Kg),Bioseed ultimax Pushpa x1 (3Kg),Basanti x1 (3Kg)",103691,Yes,Missedcall,Upendra Kumar Tiwari,LUCKNOW NORTH
 169,9528665767,Golu,Pandit,Hathras,Uttar Pradesh,hi_IN,,,,paddy,15-05-2026 17:42,26396,New Rajnish khad bhandar ,Basanti x2 (3Kg),115174,Pending,Missedcall,Brijesh Kumar,AGRA NORTH
